@@ -61,82 +61,51 @@ curl -X POST http://127.0.0.1:8000/predict `
 }
 ```
 
-## 🌐 Deployment
+## 🌐 Deployment on PythonAnywhere (100% Free)
 
-### Recommended: Fly.io (Fast Global Deployment)
+Deploy your phishing URL detector on PythonAnywhere with no credit card required!
 
-Fly.io provides fast deployment with automatic scaling and global edge locations.
+### Quick Start
 
-#### Prerequisites
+1. **Create free account** at [PythonAnywhere.com](https://www.pythonanywhere.com)
 
-Install Fly CLI:
-```powershell
-# PowerShell (Windows)
-powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
-
-# Or use winget
-winget install fly.io.flyctl
-```
-
-#### Deploy Steps
-
-1. **Login to Fly.io**
-   ```powershell
-   flyctl auth login
+2. **Open Bash console** and clone your repo:
+   ```bash
+   git clone https://github.com/ilyasiii/Phishing-URL-Prediction.git
+   cd Phishing-URL-Prediction
    ```
 
-2. **Launch the app** (from your project directory)
-   ```powershell
-   flyctl launch --name phishing-url-detector
-   ```
-   - When prompted, say **No** to Postgres/Redis
-   - Select a region closest to you (e.g., `ord` for Chicago)
-   - Say **Yes** to deploy now (or deploy later with `flyctl deploy`)
-
-3. **Set model URLs as secrets**
-   ```powershell
-   flyctl secrets set MODEL_URL="https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl"
-   flyctl secrets set FEATURE_URL="https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl"
+3. **Create virtual environment**:
+   ```bash
+   mkvirtualenv --python=/usr/bin/python3.10 phishing-env
+   pip install -r requirements.txt
    ```
 
-4. **Deploy** (if you skipped deploy in step 2)
-   ```powershell
-   flyctl deploy
+4. **Download models**:
+   ```bash
+   python scripts/download_model.py \
+     --model-url "https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl" \
+     --feature-url "https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl" \
+     --out-dir models
    ```
 
-5. **Open your app**
-   ```powershell
-   flyctl open
-   ```
+5. **Configure Web App**:
+   - Go to **Web** tab → **Add a new web app**
+   - Choose **Manual configuration** → **Python 3.10**
+   - Edit WSGI file (see `PYTHONANYWHERE.md` for complete config)
+   - Set virtualenv path: `/home/yourusername/.virtualenvs/phishing-env`
+   - Add static files mapping: URL: `/static/` → Directory: `/home/yourusername/Phishing-URL-Prediction/static/`
 
-Your app will be live at: `https://phishing-url-detector.fly.dev`
+6. **Reload and access** at `http://yourusername.pythonanywhere.com`
 
-#### Manage Your App
+📖 **Full deployment guide**: See [PYTHONANYWHERE.md](PYTHONANYWHERE.md) for detailed step-by-step instructions.
 
-```powershell
-# View logs
-flyctl logs
-
-# Check status
-flyctl status
-
-# Scale resources (if needed)
-flyctl scale memory 1024
-
-# SSH into container
-flyctl ssh console
-```
-
-### Alternative: Render (Simpler Setup)
-
-1. Go to [Render Dashboard](https://dashboard.render.com/)
-2. Click **New +** → **Web Service**
-3. Connect repo: `ilyasiii/Phishing-URL-Prediction`
-4. Environment: **Docker**, Branch: **main**
-5. Add environment variables:
-   - `MODEL_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl`
-   - `FEATURE_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl`
-6. Deploy (Free tier available)
+### Why PythonAnywhere?
+- ✅ **100% Free** - No credit card required
+- ✅ **Always-on** - No cold starts
+- ✅ **HTTPS included** - Secure by default
+- ✅ **Easy setup** - Web-based configuration
+- ✅ **512 MB storage** - Enough for this project
 
 ## 📦 Project Structure
 
