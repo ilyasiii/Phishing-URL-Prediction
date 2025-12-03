@@ -63,60 +63,80 @@ curl -X POST http://127.0.0.1:8000/predict `
 
 ## 🌐 Deployment
 
-### Option A: Vercel (Frontend) + Render (Backend)
+### Recommended: Fly.io (Fast Global Deployment)
 
-#### Deploy Backend to Render
+Fly.io provides fast deployment with automatic scaling and global edge locations.
 
-1. Go to [Render Dashboard](https://dashboard.render.com/)
-2. Click **New +** → **Web Service**
-3. Connect your GitHub repository: `ilyasiii/Phishing-URL-Prediction`
-4. Configure:
-   - **Name**: `phishing-url-api`
-   - **Environment**: `Docker`
-   - **Region**: Choose closest to your users
-   - **Branch**: `main`
-   - **Dockerfile Path**: `./Dockerfile` (auto-detected)
-5. Add Environment Variables:
-   - `MODEL_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl`
-   - `FEATURE_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl`
-   - `PORT` = `8000` (Render sets this automatically)
-6. Click **Create Web Service**
-7. Copy your API URL (e.g., `https://phishing-url-api.onrender.com`)
+#### Prerequisites
 
-#### Deploy Frontend to Vercel
+Install Fly CLI:
+```powershell
+# PowerShell (Windows)
+powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
 
-1. Go to [Vercel Dashboard](https://vercel.com/new)
-2. Import your GitHub repository: `ilyasiii/Phishing-URL-Prediction`
-3. Configure:
-   - **Framework Preset**: Other
-   - **Root Directory**: `./`
-   - **Build Command**: (leave empty)
-   - **Output Directory**: `static`
-4. **Important**: Update `static/script.js` with your Render API URL:
-   ```javascript
-   const API_URL = 'https://your-render-app.onrender.com';
+# Or use winget
+winget install fly.io.flyctl
+```
+
+#### Deploy Steps
+
+1. **Login to Fly.io**
+   ```powershell
+   flyctl auth login
    ```
-5. Click **Deploy**
-6. Your frontend will be live at `https://your-project.vercel.app`
 
-### Option B: Single Server (Render with Static Files)
-
-The FastAPI app already serves the static frontend at `/`. Just deploy the backend to Render (steps above) and access the UI at your Render URL.
-
-### Option C: Fly.io (Alternative)
-
-1. Install [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/)
-2. Login: `flyctl auth login`
-3. Launch app:
-   ```bash
+2. **Launch the app** (from your project directory)
+   ```powershell
    flyctl launch --name phishing-url-detector
    ```
-4. Set secrets:
-   ```bash
+   - When prompted, say **No** to Postgres/Redis
+   - Select a region closest to you (e.g., `ord` for Chicago)
+   - Say **Yes** to deploy now (or deploy later with `flyctl deploy`)
+
+3. **Set model URLs as secrets**
+   ```powershell
    flyctl secrets set MODEL_URL="https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl"
    flyctl secrets set FEATURE_URL="https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl"
    ```
-5. Deploy: `flyctl deploy`
+
+4. **Deploy** (if you skipped deploy in step 2)
+   ```powershell
+   flyctl deploy
+   ```
+
+5. **Open your app**
+   ```powershell
+   flyctl open
+   ```
+
+Your app will be live at: `https://phishing-url-detector.fly.dev`
+
+#### Manage Your App
+
+```powershell
+# View logs
+flyctl logs
+
+# Check status
+flyctl status
+
+# Scale resources (if needed)
+flyctl scale memory 1024
+
+# SSH into container
+flyctl ssh console
+```
+
+### Alternative: Render (Simpler Setup)
+
+1. Go to [Render Dashboard](https://dashboard.render.com/)
+2. Click **New +** → **Web Service**
+3. Connect repo: `ilyasiii/Phishing-URL-Prediction`
+4. Environment: **Docker**, Branch: **main**
+5. Add environment variables:
+   - `MODEL_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/xgboost_model.pkl`
+   - `FEATURE_URL` = `https://github.com/ilyasiii/Phishing-URL-Prediction/releases/download/phishing/feature_extractor.pkl`
+6. Deploy (Free tier available)
 
 ## 📦 Project Structure
 
