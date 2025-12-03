@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing URL Detector</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <h1>Phishing URL Detector</h1>
+            </div>
+            <p class="subtitle">Powered by XGBoost Machine Learning</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <input type="text" id="urlInput" placeholder="Enter URL to check (e.g., https://example.com)" autocomplete="off">
+                    <button id="checkBtn" onclick="checkURL()">
+                        <span class="btn-text">Check URL</span>
+                        <span class="btn-loader" style="display: none;"></span>
+                    </button>
+                </div>
+                <div class="quick-test">
+                    <span>Quick test:</span>
+                    <button class="chip safe" onclick="testURL('https://www.google.com')">google.com</button>
+                    <button class="chip safe" onclick="testURL('https://claude.ai')">claude.ai</button>
+                    <button class="chip danger" onclick="testURL('http://secure-paypa1-login.com/verify')">paypa1-login.com</button>
+                    <button class="chip danger" onclick="testURL('http://faceb00k-security.net/login.php')">faceb00k-security.net</button>
+                </div>
+            </div>
+
+            <div id="result" class="result-section" style="display: none;">
+                <div class="result-card">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <div class="result-content">
+                        <h2 id="resultLabel"></h2>
+                        <p id="resultURL" class="result-url"></p>
+                        <div class="confidence-bar">
+                            <div class="confidence-label">
+                                <span>Confidence</span>
+                                <span id="confidencePercent"></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error" class="error-section" style="display: none;">
+                <div class="error-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h3>Recent Checks</h3>
+                <div id="history" class="history-list">
+                    <p class="empty-history">No URLs checked yet</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built with FastAPI & XGBoost | Model accuracy: 99.4%</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
