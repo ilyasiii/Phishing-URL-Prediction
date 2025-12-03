@@ -6,7 +6,7 @@ import sys
 import os
 
 # IMPORTANT: Replace 'yourusername' with your actual PythonAnywhere username
-project_home = '/home/yourusername/Phishing-URL-Prediction'
+project_home = '/home/llyas009/Phishing-URL-Prediction'  # <-- UPDATED
 if project_home not in sys.path:
     sys.path = [project_home] + sys.path
 
