@@ -5,7 +5,7 @@ This file makes the FastAPI app compatible with PythonAnywhere's WSGI setup
 import sys
 import os
 
-# Add your project directory to the sys.path
+# IMPORTANT: Replace 'yourusername' with your actual PythonAnywhere username
 project_home = '/home/yourusername/Phishing-URL-Prediction'
 if project_home not in sys.path:
     sys.path = [project_home] + sys.path
@@ -30,8 +30,10 @@ if not os.path.exists(model_path) or not os.path.exists(feature_path):
         '--out-dir', models_dir
     ])
 
-# Import the FastAPI app
+# Import the FastAPI app and convert ASGI to WSGI
 from src.app import app
+from asgiref.wsgi import WsgiToAsgi
 
 # PythonAnywhere requires a WSGI application object called 'application'
-application = app
+# FastAPI is ASGI, so we use asgiref to adapt it
+application = WsgiToAsgi(app)
